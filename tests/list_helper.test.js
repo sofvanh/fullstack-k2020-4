@@ -30,8 +30,25 @@ describe('favorite blog', () => {
         expect(result.title).toBe('Canonical string reduction')
     })
 
-    test('in an empty list to be null', () => {
+    test('in an empty list is null', () => {
         const result = listHelper.favoriteBlog([])
+        expect(result).toBe(null)
+    })
+})
+
+describe('most blogs by author', () => {
+    test('in a 1-blog list is the 1 author', () => {
+        const result = listHelper.mostBlogs(listWithOneBlog)
+        expect(result).toEqual({ author: 'Edsger W. Dijkstra', blogs: 1})
+    })
+
+    test('in a long list is correct', () => {
+        const result = listHelper.mostBlogs(listWithManyBlogs)
+        expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3})
+    })
+
+    test('in an empty list is null', () => {
+        const result = listHelper.mostBlogs([])
         expect(result).toBe(null)
     })
 })

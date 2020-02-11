@@ -13,7 +13,28 @@ const favoriteBlog = (blogs) => {
     }))
 }
 
+const mostBlogs = (blogs) => {
+    if (blogs.length === 0) return null;
+    var map = {}
+    var max = blogs[0].author
+    var maxCount = 1
+    for (var i = 0; i < blogs.length; i++) {
+        const author = blogs[i].author
+        if (map[author] == null) map[author] = 1
+        else map[author]++
+        if (map[author] > maxCount) {
+            max = author
+            maxCount = map[author]
+        }
+    }
+    return {
+        author: max,
+        blogs: maxCount
+    }
+}
+
 module.exports = {
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs
 }
