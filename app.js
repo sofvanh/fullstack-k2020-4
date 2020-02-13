@@ -11,6 +11,7 @@ const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 
 mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true)
 
 logger.info('connecting to', config.MONGODB_URI)
 
