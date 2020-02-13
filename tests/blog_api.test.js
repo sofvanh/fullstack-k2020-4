@@ -106,6 +106,24 @@ describe('POST / call', () => {
         const result = await api.post('/api/blogs').send(newBlog)
         expect(result.body.likes).toBe(0)
     })
+
+    test('requires title', async () => {
+        const newBlog = {
+            author: "Jane Austen",
+            url: "https://www.realistic-life-in-england.com/"
+        }
+
+        await api.post('/api/blogs').send(newBlog).expect(400)
+    })
+
+    test('requires url', async () => {
+        const newBlog = {
+            title: "How to find a husband",
+            author: "Jane Austen"
+        }
+
+        await api.post('/api/blogs').send(newBlog).expect(400)
+    })
 })
 
 afterAll(() => {
