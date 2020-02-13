@@ -60,21 +60,41 @@ beforeEach(async () => {
     await Blog.insertMany(initialBlogs)
 })
 
-test('blogs are returned as json', async () => {
-    await api
-        .get('/api/blogs')
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
+describe('GET / call', () => {
+    test('returns json', async () => {
+        await api
+            .get('/api/blogs')
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+    })
+
+    test('returns six blogs', async () => {
+        const response = await api.get('/api/blogs')
+        expect(response.body.length).toBe(6)
+    })
+
+    test('returns blogs with ids instead of _ids', async () => {
+        const response = await api.get('/api/blogs')
+        expect(response.body[0].id).toBeDefined
+    })
 })
 
-test('there are six blogs', async () => {
-    const response = await api.get('/api/blogs')
-    expect(response.body.length).toBe(6)
-})
+describe('POST / call', () => {
+    test('adds a blog', async () => {
+        const newBlog = {
+            title: "Being Awesome",
+            author: "Michelle Obama",
+            url: "https://awesome.com/",
+            likes: 100
+        }
 
-test('blogs have ids instead of _ids', async () => {
-    const response = await api.get('/api/blogs')
-    expect(response.body[0].id).toBeDefined
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+
+        const blogs = await api.get('/api/blogs')
+        expect(blogs.body[6].title).toBe(newBlog.title)
+    })
 })
 
 afterAll(() => {
