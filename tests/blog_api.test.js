@@ -95,6 +95,17 @@ describe('POST / call', () => {
         const blogs = await api.get('/api/blogs')
         expect(blogs.body[6].title).toBe(newBlog.title)
     })
+
+    test('sets likes to 0 by default', async () => {
+        const newBlog = {
+            title: "Basic Food for Basic Noobs",
+            author: "Gordon Ramsay",
+            url: "https://www.noobseat.com/"
+        }
+
+        const result = await api.post('/api/blogs').send(newBlog)
+        expect(result.body.likes).toBe(0)
+    })
 })
 
 afterAll(() => {
