@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const initialBlogs = [
     {
@@ -11,53 +12,36 @@ const initialBlogs = [
         author: "Michael Chan",
         url: "https://reactpatterns.com/",
         likes: 7,
+        user: "5e457ce03521ea6cbe0be68a",
         __v: 0
     },
     {
-        _id: "5a422aa71b54a676234d17f8",
-        title: "Go To Statement Considered Harmful",
-        author: "Edsger W. Dijkstra",
-        url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-        likes: 5,
-        __v: 0
-    },
-    {
-        _id: "5a422b3a1b54a676234d17f9",
-        title: "Canonical string reduction",
-        author: "Edsger W. Dijkstra",
-        url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-        likes: 12,
-        __v: 0
-    },
-    {
-        _id: "5a422b891b54a676234d17fa",
-        title: "First class tests",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
-        likes: 10,
-        __v: 0
-    },
-    {
-        _id: "5a422ba71b54a676234d17fb",
-        title: "TDD harms architecture",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
-        likes: 0,
-        __v: 0
-    },
-    {
-        _id: "5a422bc61b54a676234d17fc",
-        title: "Type wars",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-        likes: 2,
+        _id: "5a422a851b54a927234d17f7",
+        title: "FASHION 101 FOR NOOBS",
+        author: "Linus",
+        url: "https://fashion.com/",
+        likes: 200,
+        user: "5e457ce03521ea6cbe0be68a",
         __v: 0
     }
 ]
 
+const testUser = {
+    _id: "5e457ce03521ea6cbe0be68a",
+    username: "violet",
+    name: "Violet Gray",
+    passwordHash: "$2b$10$/9MHQN0bScx/zNos3h9Lj.To0uj.aZYjqikEGhFlXA66.AVZl7VMK",
+    __v: 0,
+    blogs: [
+        "5a422a851b54a676234d17f7"
+    ]
+}
+
 beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(initialBlogs)
+    await User.deleteMany({})
+    await User.insertMany([testUser])
 })
 
 describe('GET / call', () => {
@@ -68,9 +52,9 @@ describe('GET / call', () => {
             .expect('Content-Type', /application\/json/)
     })
 
-    test('returns six blogs', async () => {
+    test('returns two blogs', async () => {
         const response = await api.get('/api/blogs')
-        expect(response.body.length).toBe(6)
+        expect(response.body.length).toBe(2)
     })
 
     test('returns blogs with ids instead of _ids', async () => {
@@ -90,10 +74,11 @@ describe('POST / call', () => {
 
         await api
             .post('/api/blogs')
+            .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU0NTdjZTAzNTIxZWE2Y2JlMGJlNjhhIiwiaWF0IjoxNTgxNzY3ODQ2fQ.Mbn0zpB9IOcnlLK5piqsvbEfN6WrGgXeTscBDKUhj7w')
             .send(newBlog)
 
         const blogs = await api.get('/api/blogs')
-        expect(blogs.body[6].title).toBe(newBlog.title)
+        expect(blogs.body[2].title).toBe(newBlog.title)
     })
 
     test('sets likes to 0 by default', async () => {
@@ -103,7 +88,10 @@ describe('POST / call', () => {
             url: "https://www.noobseat.com/"
         }
 
-        const result = await api.post('/api/blogs').send(newBlog)
+        const result = await api
+                    .post('/api/blogs')
+                    .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU0NTdjZTAzNTIxZWE2Y2JlMGJlNjhhIiwiaWF0IjoxNTgxNzY3ODQ2fQ.Mbn0zpB9IOcnlLK5piqsvbEfN6WrGgXeTscBDKUhj7w')
+                    .send(newBlog)
         expect(result.body.likes).toBe(0)
     })
 
@@ -113,7 +101,10 @@ describe('POST / call', () => {
             url: "https://www.realistic-life-in-england.com/"
         }
 
-        await api.post('/api/blogs').send(newBlog).expect(400)
+        await api
+            .post('/api/blogs')
+            .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU0NTdjZTAzNTIxZWE2Y2JlMGJlNjhhIiwiaWF0IjoxNTgxNzY3ODQ2fQ.Mbn0zpB9IOcnlLK5piqsvbEfN6WrGgXeTscBDKUhj7w')
+            .send(newBlog).expect(400)
     })
 
     test('requires url', async () => {
@@ -122,7 +113,10 @@ describe('POST / call', () => {
             author: "Jane Austen"
         }
 
-        await api.post('/api/blogs').send(newBlog).expect(400)
+        await api
+            .post('/api/blogs')
+            .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU0NTdjZTAzNTIxZWE2Y2JlMGJlNjhhIiwiaWF0IjoxNTgxNzY3ODQ2fQ.Mbn0zpB9IOcnlLK5piqsvbEfN6WrGgXeTscBDKUhj7w')
+            .send(newBlog).expect(400)
     })
 })
 
