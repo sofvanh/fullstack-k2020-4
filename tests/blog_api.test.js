@@ -120,6 +120,14 @@ describe('POST / call', () => {
     })
 })
 
+describe('DELETE /:id call', () => {
+    test('does not delete without token', async () => {
+        const response = await api.delete('/api/blogs/5a422a851b54a676234d17f7')
+        expect(response.status).toBe(401)
+        expect(response.body.error).toBe('invalid token')
+    })
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
