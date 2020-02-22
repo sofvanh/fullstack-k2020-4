@@ -4,32 +4,6 @@ const app = require('../app')
 const api = supertest(app)
 const User = require('../models/user')
 
-const initialUsers = [
-  {
-    _id: "5e457e129162ea6f49a784af",
-    username: "lentsikka",
-    name: "Lennu",
-    passwordHash: "$2b$10$7/A55bnVnAeIKvH6BcViIulI5McSxqKyGflNbXroUjMA714.NgEhm",
-    __v: 0
-  },
-  {
-    _id: "5e457ce03521ea6cbe0be68a",
-    username: "violet",
-    name: "Violet Gray",
-    passwordHash: "$2b$10$/9MHQN0bScx/zNos3h9Lj.To0uj.aZYjqikEGhFlXA66.AVZl7VMK",
-    __v: 0,
-    blogs: [
-      "5a422a851b54a676234d17f7",
-      "5a422a851b54a927234d17f7"
-    ]
-  }
-]
-
-beforeEach(async () => {
-  await User.deleteMany({})
-  await User.insertMany(initialUsers)
-})
-
 describe('POST / call', () => {
   test('does not add short usernames', async () => {
     const newUser = {

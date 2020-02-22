@@ -12,7 +12,7 @@ const initialBlogs = [
     author: "Michael Chan",
     url: "https://reactpatterns.com/",
     likes: 7,
-    user: "5e457ce03521ea6cbe0be68a",
+    user: "5e51117cfba7b553c3393e88",
     __v: 0
   },
   {
@@ -21,14 +21,30 @@ const initialBlogs = [
     author: "Linus",
     url: "https://fashion.com/",
     likes: 200,
-    user: "5e457ce03521ea6cbe0be68a",
+    user: "5e51117cfba7b553c3393e88",
     __v: 0
+  }
+]
+
+const initialUsers = [
+  {
+    _id: "5e51117cfba7b553c3393e88",
+    username: "violet",
+    name: "Violet Gray",
+    passwordHash: "$2b$10$sCB5Gx8b1yjIup3kOfrh1e/JNj2wQK5chpCwAVIHynT3CYNMLX18O",
+    __v: 0,
+    blogs: [
+      "5a422a851b54a676234d17f7",
+      "5a422a851b54a927234d17f7"
+    ]
   }
 ]
 
 beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(initialBlogs)
+  await User.deleteMany({})
+  await User.insertMany(initialUsers)
 })
 
 describe('GET / call', () => {
@@ -61,7 +77,7 @@ describe('POST / call', () => {
 
     await api
       .post('/api/blogs')
-      .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU0NTdjZTAzNTIxZWE2Y2JlMGJlNjhhIiwiaWF0IjoxNTgxNzY3ODQ2fQ.Mbn0zpB9IOcnlLK5piqsvbEfN6WrGgXeTscBDKUhj7w')
+      .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU1MTExN2NmYmE3YjU1M2MzMzkzZTg4IiwiaWF0IjoxNTgyMzcxMjM5fQ.Id51g3-ejzfvSrXKFT3liaIiH88dKVLIPt1BNVTkR7A')
       .send(newBlog)
 
     const blogs = await api.get('/api/blogs')
@@ -77,7 +93,7 @@ describe('POST / call', () => {
 
     const result = await api
       .post('/api/blogs')
-      .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU0NTdjZTAzNTIxZWE2Y2JlMGJlNjhhIiwiaWF0IjoxNTgxNzY3ODQ2fQ.Mbn0zpB9IOcnlLK5piqsvbEfN6WrGgXeTscBDKUhj7w')
+      .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU1MTExN2NmYmE3YjU1M2MzMzkzZTg4IiwiaWF0IjoxNTgyMzcxMjM5fQ.Id51g3-ejzfvSrXKFT3liaIiH88dKVLIPt1BNVTkR7A')
       .send(newBlog)
     expect(result.body.likes).toBe(0)
   })
@@ -90,7 +106,7 @@ describe('POST / call', () => {
 
     await api
       .post('/api/blogs')
-      .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU0NTdjZTAzNTIxZWE2Y2JlMGJlNjhhIiwiaWF0IjoxNTgxNzY3ODQ2fQ.Mbn0zpB9IOcnlLK5piqsvbEfN6WrGgXeTscBDKUhj7w')
+      .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU1MTExN2NmYmE3YjU1M2MzMzkzZTg4IiwiaWF0IjoxNTgyMzcxMjM5fQ.Id51g3-ejzfvSrXKFT3liaIiH88dKVLIPt1BNVTkR7A')
       .send(newBlog).expect(400)
   })
 
@@ -102,7 +118,7 @@ describe('POST / call', () => {
 
     await api
       .post('/api/blogs')
-      .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU0NTdjZTAzNTIxZWE2Y2JlMGJlNjhhIiwiaWF0IjoxNTgxNzY3ODQ2fQ.Mbn0zpB9IOcnlLK5piqsvbEfN6WrGgXeTscBDKUhj7w')
+      .set('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpb2xldCIsImlkIjoiNWU1MTExN2NmYmE3YjU1M2MzMzkzZTg4IiwiaWF0IjoxNTgyMzcxMjM5fQ.Id51g3-ejzfvSrXKFT3liaIiH88dKVLIPt1BNVTkR7A')
       .send(newBlog).expect(400)
   })
 })
